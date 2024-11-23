@@ -1,7 +1,17 @@
 //EVENTO AL CARGAR LA PAGINA
 window.addEventListener("DOMContentLoaded", () => {
-    showCartProducts()
+    showCartProducts();
 
+    let tiposEnvios = document.getElementsByName("tipo-envio")
+    tiposEnvios.forEach(elemento => {
+        elemento.addEventListener("change", (e) => {
+            actualizarCostos(e.currentTarget.value)
+        });
+    });
+});
+
+
+function setRadio(){
     let radios = document.getElementsByName('tipo-envio');
     let valorSeleccionado = '';
     for (let radio of radios) {
@@ -11,15 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
     actualizarCostos(valorSeleccionado);
-
-    let tiposEnvios = document.getElementsByName("tipo-envio")
-    tiposEnvios.forEach(elemento => {
-        elemento.addEventListener("change", (e) => {
-            actualizarCostos(e.currentTarget.value)
-        });
-    });
-    });
-
+}
     
 
 // FUNCIÓN QUE MUESTRA LOS PRODUCTOS DEL CARRTIO DE COMPRAS
@@ -66,8 +68,6 @@ let showCartProducts = ()=>{
     `;
     });
     document.querySelector("#cart-total").innerHTML = `TOTAL UYU ${totalCost}`
-
-
 }
 
 //FUNCIÓN PARA AUMENTAR LA CANTIDAD DE UN PRODUCTO
@@ -82,22 +82,13 @@ function increaseQuantity(productID) {
         showCartProducts();
     }
 
-    let radios = document.getElementsByName('tipo-envio');
-    let valorSeleccionado = '';
-    for (let radio of radios) {
-        if (radio.checked) {
-            valorSeleccionado = radio.value;
-            break;
-        }
-    }
-    actualizarCostos(valorSeleccionado)
+    setRadio();
 }
 
 // FUNCIÓN PARA DISMINUIR LA CANTIDAD
 function decreaseQuantity(productID) {
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     let product = carrito.find(element => element.id === productID);
-
 
     if (product) {
 
@@ -110,15 +101,7 @@ function decreaseQuantity(productID) {
         localStorage.setItem("carrito", JSON.stringify(carrito));
         showCartProducts()
     }
-    let radios = document.getElementsByName('tipo-envio');
-    let valorSeleccionado = '';
-    for (let radio of radios) {
-        if (radio.checked) {
-            valorSeleccionado = radio.value;
-            break;
-        }
-    }
-    actualizarCostos(valorSeleccionado)
+    setRadio();
 }
 
 
@@ -130,15 +113,7 @@ function removeProduct(productID) {
     carrito.splice(productIndex, 1);
     localStorage.setItem("carrito", JSON.stringify(carrito));
     showCartProducts();
-    let radios = document.getElementsByName('tipo-envio');
-    let valorSeleccionado = '';
-    for (let radio of radios) {
-        if (radio.checked) {
-            valorSeleccionado = radio.value;
-            break;
-        }
-    }
-    actualizarCostos(valorSeleccionado)
+    setRadio();
 
 }
 
