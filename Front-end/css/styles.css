@@ -257,12 +257,12 @@ nav a {
 #product-list,
 .product-list {
   display: flex;
-  margin: 24px 0;
+  margin: 50px;
   align-items: center;
   gap: 40px;
   align-self: stretch;
   flex-wrap: wrap;
-  /* align-items: flex-start; */
+
 }
 
 /*    PRODUCT CARD     */
