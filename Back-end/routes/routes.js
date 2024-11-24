@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {getApiData} = require("../controllers/controllers"); // Importar los controllers necesarios
+const controllers = require("../controllers/controllers"); // Importar los controllers necesarios
 
 
 //Rutas con métodos
-router.get("/:fileName", getApiData);
+router.get("/:fileName", controllers.getApiData);
 
-// contactsRouter.get("/:id", contactsController.getContactById);
+router.get("/:fileName/:id", controllers.getApiDataById);
 
 // contactsRouter.post("/", contactsController.addContact);
 

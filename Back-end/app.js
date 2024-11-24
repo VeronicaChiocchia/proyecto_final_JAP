@@ -13,12 +13,14 @@ app.get('/', (req, res) => {
     res.send('¡Servidor funcionando!');
 });
 
+//Evitar errores en el navegador
 app.use(cors());
-
 app.get('/favicon.ico', (req, res) => {
     res.status(204).end(); // Responder sin contenido
 });
 
+
+//Llamando a la ruta
 app.use("/", router);
 
 
