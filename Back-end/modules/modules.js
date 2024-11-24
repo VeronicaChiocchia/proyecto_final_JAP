@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+//Obtener datos de todos lo json
 const readApiData = async (dir) => {
     const files = fs.readdirSync(dir); //lee la ruta y la guarda
     let data = []; //lista donde se van a cargar los json a mostrar
@@ -15,10 +16,10 @@ const readApiData = async (dir) => {
     return data;
 };
 
+//Obtener dato de json por id
 const readApiDataById = async (file) =>{
     const fileContent = fs.readFileSync(file, 'utf8');
     return JSON.parse(fileContent);
-  
 }
   
 
