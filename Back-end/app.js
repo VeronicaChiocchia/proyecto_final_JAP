@@ -1,21 +1,26 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const fs = require('fs');
 const dir = __dirname;
+module.exports = dir; //Exporta ruta base
+const cors = require('cors'); // Importar cors
 
 // Aquí importamos los routers
 const router = require("./routes/routes");
-
 
 app.get('/', (req, res) => {
     res.send('¡Servidor funcionando!');
 });
 
-//Obtiene los json
+app.use(cors());
+
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end(); // Responder sin contenido
+});
+
 app.use("/", router);
 
-
-module.exports = dir; //Exporta ruta base
 
 
 app.listen(port, () => {
