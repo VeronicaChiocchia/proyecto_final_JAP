@@ -20,12 +20,12 @@ const searchButton = document.getElementById('search-button');
 document.addEventListener('DOMContentLoaded', function () {
   const catID = localStorage.getItem('catID');
   //OBTIENE LA LISTA DE PRODUCTOS 
-  getJSONData(`${PRODUCTS_URL}${catID}${EXT_TYPE}`).then(function (resultObj) {
+  getJSONData(`${PRODUCTS_URL}`).then(function (resultObj) {
     if (resultObj.status === 'ok') {
-      originalArray = resultObj.data.products;
+      originalArray = resultObj.data[0].products;
       currentProductsArray = originalArray;
       showProductsList(currentProductsArray); //MUESTRA LOS PRODUCTOS
-      pageTitle.innerHTML = resultObj.data.catName.toUpperCase();
+      pageTitle.innerHTML = resultObj.data[0].catName.toUpperCase();
     }
   });
 

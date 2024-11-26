@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
     savedCalification(); //OBTIENE LOS COMENTARIOS PREVIAMENTE GUARDADOS
     cargarCarrito(); //CARGA EL CARRITO
     starCalification(stars);
-    const url = PRODUCT_INFO_URL + productID + EXT_TYPE;
-    const commentsURL = PRODUCT_INFO_COMMENTS_URL + productID + ".json";//esta es la url base que apunta a la api donde se almacenan los comentario de los productos
+    const url = PRODUCT_INFO_URL + productID;
+    const commentsURL = PRODUCT_INFO_COMMENTS_URL + productID;//esta es la url base que apunta a la api donde se almacenan los comentario de los productos
 
     //OBTIENE EL PRODUCTO A MOSTRAR
     getJSONData(url)
