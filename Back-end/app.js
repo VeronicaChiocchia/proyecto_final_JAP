@@ -13,6 +13,18 @@ app.get('/', (req, res) => {
     res.send('¡Servidor funcionando!');
 });
 
+// Autorización
+const verifyAuthentication = (req, res, next) => {
+    const token = req.headers['Authorization'];
+    if (token === 'my-secret-token') {
+        next();
+    } else {
+        res.status(401).send('Usuario no autorizado');
+    }
+};
+
+app.use(verifyAuthentication);
+
 //Evitar errores en el navegador
 app.use(cors());
 app.get('/favicon.ico', (req, res) => {
