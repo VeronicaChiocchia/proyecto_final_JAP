@@ -6,7 +6,7 @@ const path = require('path');
 const pool = mariadb.createPool({
     host: 'localhost',
     user: 'root', // Cambia esto por tu usuario de MariaDB
-    password: '1234', // Cambia esto por tu contraseña de MariaDB
+    password: 'password', // Cambia esto por tu contraseña de MariaDB
     connectionLimit: 5
   });
   
@@ -40,3 +40,6 @@ const pool = mariadb.createPool({
   
   // Ejecutar la función
   executeQueries();
+
+// Exportar el pool para usarlo en otras partes de la aplicación
+module.exports = pool;
