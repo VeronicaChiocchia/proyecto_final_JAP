@@ -41,5 +41,3 @@ const pool = mariadb.createPool({
   // Ejecutar la función
   executeQueries();
 
-// Exportar el pool para usarlo en otras partes de la aplicación
-module.exports = pool;
