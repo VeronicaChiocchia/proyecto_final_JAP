@@ -40,3 +40,4 @@ const pool = mariadb.createPool({
   
   // Ejecutar la función
   executeQueries();
+
