@@ -7,6 +7,14 @@ module.exports = dir; //Exporta ruta base
 const cors = require('cors'); // Importar cors
 const jwt = require('jsonwebtoken');
 
+const mariadb = require('mariadb');
+const pool = mariadb.createPool({
+    host: 'localhost',
+    user: 'root', // Cambia esto por tu usuario de MariaDB
+    password: '1234', // Cambia esto por tu contraseña de MariaDB
+    connectionLimit: 5
+});
+
 // Aquí importamos los routers
 const router = require("./routes/routes");
 
@@ -83,3 +91,21 @@ app.use("/", router);
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+app.post("/cart", async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        await conn.query('USE ecommerce_jap')
+        const response = await conn.query("INSERT INTO cart(product_id, name, quantity, total_price) value (?, ?, ?, ?)", 
+            [req.body.product_id, req.body.name, req.body.quantity, req.body.total_price]);
+        // res: { affectedRows: 1, insertId: 1, warningStatus: 0 }
+        
+        res.json({id: parseInt(response.insertId), ...req.body})
+    
+    } catch (error) {
+        res.status(500).json({message: "No se pudo cargar la información"})
+    } finally {
+        if (conn) conn.release();
+    }
+})
