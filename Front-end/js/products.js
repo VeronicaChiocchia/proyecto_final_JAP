@@ -19,15 +19,29 @@ const searchButton = document.getElementById('search-button');
 //EVENTO AL CARGAR LA PAGINA
 document.addEventListener('DOMContentLoaded', function () {
   const catID = localStorage.getItem('catID');
+  console.log("catID from localStorage: ", catID);  // Verifica si se obtiene el catID correctamente
+
   //OBTIENE LA LISTA DE PRODUCTOS 
   getJSONData(`${PRODUCTS_URL}`).then(function (resultObj) {
     if (resultObj.status === 'ok') {
-      originalArray = resultObj.data[0].products;
-      currentProductsArray = originalArray;
-      showProductsList(currentProductsArray); //MUESTRA LOS PRODUCTOS
-      pageTitle.innerHTML = resultObj.data[0].catName.toUpperCase();
+      // Filtrar las categorías para obtener solo la categoría correspondiente
+      const category = resultObj.data.find(cat => cat.catID == catID);
+
+      if (category) {
+        // Obtén los productos de la categoría seleccionada
+        const currentProductsArray = category.products;
+
+        // Muestra los productos de esa categoría
+        showProductsList(currentProductsArray);
+
+        // Actualiza el título de la página con el nombre de la categoría
+        pageTitle.innerHTML = category.catName.toUpperCase();
+      } else {
+        console.log("Categoría no encontrada");
+      }
     }
   });
+});
 
   //EVENTOS DE FILTROS
   document.getElementById('sortAsc').addEventListener('click', () => {
@@ -59,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('sortByRelevance').addEventListener('click', () => {
     sortAndShowProducts(ORDER_DESC_BY_RELEVANCE);
   });
-});
 
 //FUNCION QUE GUARDA EL ID DEL PRODUCTO EN EL LOCAL STORAGE Y REDIRIGE A PRODUCT-INFO DE DICHO PRODUCTO
 function setCatID(id) {
