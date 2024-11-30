@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function setRadio(){
+function setRadio() {
     let radios = document.getElementsByName('tipo-envio');
     let valorSeleccionado = '';
     for (let radio of radios) {
@@ -22,19 +22,19 @@ function setRadio(){
     }
     actualizarCostos(valorSeleccionado);
 }
-    
+
 
 // FUNCIÓN QUE MUESTRA LOS PRODUCTOS DEL CARRTIO DE COMPRAS
-let showCartProducts = ()=>{ 
-    let totalCost=0
-    document.querySelector(".product-list").innerHTML =""
+let showCartProducts = () => {
+    let totalCost = 0
+    document.querySelector(".product-list").innerHTML = ""
     let products = JSON.parse(localStorage.getItem("carrito"))
     if (products === null || products.length === 0) {
         document.querySelector(".product-list").innerHTML = `<h3>Carrito vacio, encontra lo que buscas en el siguiente enlace </h3><a class="primary-button button-font" href="categories.html">DESCUBRIR MÁS</a>`
         document.querySelector("#finalizar-compra").innerHTML = ""
         document.querySelector("#cart-total").innerHTML = ""
         document.querySelector("#cost-section").style.display = "none"
-        return 
+        return
     }
     document.querySelector("#cost-section").style.display = "block"
     document.querySelector("#cart-total").innerHTML = `<h5 class="total-text">Total:</h5>`
@@ -118,34 +118,70 @@ function removeProduct(productID) {
 }
 
 
-document.querySelector("#finalizar-compra-submit").addEventListener("click",(event)=>{
+document.querySelector("#finalizar-compra-submit").addEventListener("click", (event) => {
     event.preventDefault();
-    const camposDireccion = ['calle', 'numero', 'localidad', 'departamento']; 
+    const camposDireccion = ['calle', 'numero', 'localidad', 'departamento'];
     const camposTarjeta = ['codigo-tarjeta', 'validez-tarjeta', 'numero-tarjeta', 'nombre-tarjeta'];
     const errores = [];
-    const opcionTarjeta = document.getElementById("credit-card").checked 
-    const campos = opcionTarjeta?[...camposDireccion,...camposTarjeta]:camposDireccion
+    const opcionTarjeta = document.getElementById("credit-card").checked
+    const campos = opcionTarjeta ? [...camposDireccion, ...camposTarjeta] : camposDireccion
     console.log(campos)
     campos.forEach(id => {
-      const campo = document.getElementById(id);
-      if (campo.value.trim() === '') {
-        errores.push(`El campo ${id} está vacío.`);
-        campo.style.borderColor = 'red'; // Resalta el campo vacío
-      } else {
-        campo.style.borderColor = ''; // Limpia el estilo si ya está lleno
-      }
+        const campo = document.getElementById(id);
+        if (campo.value.trim() === '') {
+            errores.push(`El campo ${id} está vacío.`);
+            campo.style.borderColor = 'red'; // Resalta el campo vacío
+        } else {
+            campo.style.borderColor = ''; // Limpia el estilo si ya está lleno
+        }
     });
-      const contenedorErrores = document.getElementById('errores');
+    const contenedorErrores = document.getElementById('errores');
     if (errores.length > 0) {
-      contenedorErrores.innerHTML = errores.join('<br>'); // Une los errores con un salto de línea
-      alert('Error: revise los campos requeridos.')
+        contenedorErrores.innerHTML = errores.join('<br>'); // Une los errores con un salto de línea
+        alert('Error: revise los campos requeridos.')
     } else {
-      contenedorErrores.innerHTML = '';
-      alert('Compra realizada con éxito.');
-      localStorage.removeItem("carrito")
-      showCartProducts()
+        contenedorErrores.innerHTML = '';
+
+        enviarDatos();
+        
+        
+
     }
-  });
+});
+
+async function enviarDatos() {
+    let carrito = JSON.parse(localStorage.getItem("carrito"))
+    if (!carrito || carrito.length === 0) {
+        console.error('El carrito está vacío o no existe.');
+        return;
+    }
+    for (let item of carrito) {
+        const data = {
+            product_id: parseInt(item.id),
+            name: item.name,
+            quantity: parseInt(item.quantity),
+            total_price: parseInt(item.quantity*item.cost)
+        };
+    
+        try {
+            const response = await fetch('http://localhost:3000/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+    
+            // if (!response.ok) throw new Error('Error en la petición');
+    
+            const result = await response.json();
+            console.log('Respuesta del servidor:', result);
+        } catch (error) {
+            console.error('Error:', error);
+        } 
+    }
+    
+}
 
 function actualizarCostos(valorSeleccionado) {
     let mostrarSubtotal = document.getElementById("costo-subtotal");
