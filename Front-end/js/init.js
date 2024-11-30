@@ -3,11 +3,10 @@ const CART_INFO_URL = "https://japceibal.github.io/emercado-api/user_cart/";
 const CART_BUY_URL = "https://japceibal.github.io/emercado-api/cart/buy.json";
 const EXT_TYPE = ".json";
 //NUEVAS RUTAS DE API
-const CATEGORIES_URL = "http://localhost:3000/cats";
-const PRODUCTS_URL = "http://localhost:3000/cats_products";
-const PRODUCT_INFO_URL = "http://localhost:3000/products/";
-const PRODUCT_INFO_COMMENTS_URL = "http://localhost:3000/products_comments/";
-
+const CATEGORIES_URL = "http://localhost:3000/protected/cats";
+const PRODUCTS_URL = "http://localhost:3000/protected/cats_products";
+const PRODUCT_INFO_URL = "http://localhost:3000/protected/products/";
+const PRODUCT_INFO_COMMENTS_URL = "http://localhost:3000/protected/products_comments/";
 
 document.addEventListener("DOMContentLoaded", ()=> {
   cargarMenu();
@@ -25,7 +24,13 @@ let hideSpinner = function(){
 let getJSONData = function(url){
     let result = {};
     showSpinner();
-    return fetch(url)
+    let userSession = localStorage.getItem("userSession")
+    return fetch(url,{
+      headers: {
+        'Authorization': userSession.token
+      },
+    }
+    )
     .then(response => {
       if (response.ok) {
         return response.json();

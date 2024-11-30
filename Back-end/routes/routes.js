@@ -4,9 +4,9 @@ const controllers = require("../controllers/controllers"); // Importar los contr
 
 
 //Rutas con métodos
-router.get("/:fileName", controllers.getApiData);
+router.get("/protected/:fileName", controllers.getApiData);
 
-router.get("/:fileName/:id", controllers.getApiDataById);
+router.get("/protected/:fileName/:id", controllers.getApiDataById);
 
 // contactsRouter.post("/", contactsController.addContact);
 
