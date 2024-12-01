@@ -151,6 +151,7 @@ document.querySelector("#finalizar-compra-submit").addEventListener("click", (ev
 
 async function enviarDatos() {
     let carrito = JSON.parse(localStorage.getItem("carrito"))
+    let userSession = localStorage.getItem("userSession")
     if (!carrito || carrito.length === 0) {
         console.error('El carrito está vacío o no existe.');
         return;
@@ -164,10 +165,11 @@ async function enviarDatos() {
         };
     
         try {
-            const response = await fetch('http://localhost:3000/cart', {
+            const response = await fetch('http://localhost:3000/protected/cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': userSession.token
                 },
                 body: JSON.stringify(data),
             });

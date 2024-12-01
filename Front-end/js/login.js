@@ -1,3 +1,5 @@
+const LOGIN_URL = "http://localhost:3000/login"
+
 //DECLARACION DE VARIABLES Y CONSTANTES
 let inputArray = document.querySelectorAll("input");
 let signBtn = document.getElementById("signBtn");
@@ -44,8 +46,6 @@ signBtn.addEventListener("click", function () {
         let userName = user.value;
         console.log(token, userName);
         loginUser(userName, token);
-        // Redirige a la página principal
-        window.location.href = "index.html";
     }
 });
 
@@ -66,12 +66,34 @@ document.getElementById("show-hide-button").addEventListener("click", function (
 function loginUser(username, token) {
     const userSession = {
         username: username,
-        token: token,
-        loggedIn: true
+        password: token,
+        loggedIn: true,
     };
+ 
+    // POST para conseguir el token de el usuario en http://localhost:3001/login
+    fetch(LOGIN_URL, {
+        method: 'POST',
+        body: JSON.stringify(userSession),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+                userSession.token = data.token;
+                userSession.loggedIn = true;
+                // Guardo el objeto en el session storage
+                localStorage.setItem('userSession', JSON.stringify(userSession));
+                window.location.href = "index.html";
+                return;
+        })
+        .catch((error) => {
+            userSession.loggedIn = false;
+            sessionStorage.clear('user');
+            alert('Usuario no existe o no esta autorizado, Intente nuevamente.');
+        });
 
-    // usamos localStorage para guardar los datos de la sesión del usuario
-    localStorage.setItem('userSession', JSON.stringify(userSession));
+
     console.log('Log in correcto y sesión guardada.');
 }
 
