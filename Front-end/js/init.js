@@ -21,35 +21,88 @@ let hideSpinner = function(){
   document.getElementById("spinner-wrapper").style.display = "none";
 }
 
-let getJSONData = function(url){
-    let result = {};
-    showSpinner();
-    let userSession = localStorage.getItem("userSession")
-    return fetch(url,{
+
+// FUNCIÓN PARA VERIFICAR LA SESIÓN Y REDIRIGIR AL LOGIN SI ES NECESARIO
+function checkSessionAndRedirect() {
+  const userSession = JSON.parse(localStorage.getItem("userSession"));
+
+  if (!userSession || !userSession.token) {
+      console.log('Token no encontrado o sesión no iniciada.');
+      localStorage.removeItem('userSession'); 
+      window.location.href = "login.html"; 
+      return false; 
+  }
+  return true; 
+}
+
+let getJSONData = function (url) {
+  let result = {};
+  showSpinner();
+
+  
+  if (!checkSessionAndRedirect()) {
+      hideSpinner();
+      return; 
+  }
+
+  const userSession = JSON.parse(localStorage.getItem("userSession"));
+
+  return fetch(url, {
+      method: 'GET',
       headers: {
-        'Authorization': userSession.token
-      },
-    }
-    )
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }else{
-        throw Error(response.statusText);
+          'Authorization': `Bearer ${userSession.token}` 
       }
-    })
-    .then(function(response) {
-          result.status = 'ok';
-          result.data = response;
-          hideSpinner();
-          return result;
-    })
-    .catch(function(error) {
-        result.status = 'error';
-        result.data = error;
-        hideSpinner();
-        return result;
-    });
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('No autorizado o error al obtener datos');
+      }
+      return response.json();
+  })
+  .then(function (response) {
+      result.status = 'ok';
+      result.data = response;
+      hideSpinner();
+      return result;
+  })
+  .catch(function (error) {
+      result.status = 'error';
+      result.data = error;
+      hideSpinner();
+      console.error('Error al obtener datos protegidos:', error.message);
+      localStorage.removeItem('userSession');
+      window.location.href = "login.html"; 
+      return result;
+  });
+}
+
+//FUNCIÓN PARA ACCEDER A RUTAS PROTEGIDAS
+function fetchProtectedData(endpoint) {
+
+  if (!checkSessionAndRedirect()) {
+      return; 
+  }
+
+  const userSession = JSON.parse(localStorage.getItem('userSession'));
+
+  fetch(endpoint, {
+      method: 'GET',
+      headers: {
+          'Authorization': `Bearer ${userSession.token}`,
+      },
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('No autorizado o recurso no encontrado.');
+      }
+      return response.json();
+  })
+  .then(data => console.log('Datos protegidos:', data))
+  .catch(error => {
+      alert(error.message);
+      localStorage.removeItem('userSession'); 
+      window.location.href = "login.html"; 
+  });
 }
 
 
@@ -95,6 +148,7 @@ function logout() {
   localStorage.removeItem("lastName");
   localStorage.removeItem("secondLastName");
   localStorage.removeItem("phone");
+  localStorage.removeItem('token');
   console.log('Sesión cerrada y datos eliminados de localStorage.');
   window.location.href = 'index.html';
 }

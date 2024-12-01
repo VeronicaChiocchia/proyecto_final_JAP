@@ -35,21 +35,13 @@ function inputValidation() {
         }
     });
 
+    console.log(isValid);
+
     return isValid;
 }
 
-//AL APRETAR INGRESAR, TE LLEVA A LA PAGINA PRINCIPAL SI ES VALIDO
-signBtn.addEventListener("click", function () {
-    if (inputValidation()) {
-        // Session storage
-        let token = password.value;
-        let userName = user.value;
-        console.log(token, userName);
-        loginUser(userName, token);
-    }
-});
 
-// evento que me muestra u oculta contraseña
+// EVENTO QUE MUESTRA U OCULTA CONTRASEÑA
 document.getElementById("show-hide-button").addEventListener("click", function () {
     if (password.type == "password") {
         password.type = "text";
@@ -62,40 +54,47 @@ document.getElementById("show-hide-button").addEventListener("click", function (
     }
 });
 
-//FUNCIÓN QUE CREA UN OBJETO CON LOS DATOS DEL LOG-IN USUARIO Y LO GUARDA EN EL SESSION STORAGE
-function loginUser(username, token) {
-    const userSession = {
-        username: username,
-        password: token,
-        loggedIn: true,
-    };
- 
-    // POST para conseguir el token de el usuario en http://localhost:3001/login
+
+// CÓDIGO QUE MANEJA EL LOGIN DEL USUARIO
+signBtn.addEventListener("click", function () {
+    const usernameValue = user.value.trim();
+    const passwordValue = password.value.trim();
+
+    if (!usernameValue || !passwordValue) {
+        alert('Por favor, ingrese un nombre de usuario y una contraseña.');
+        return;
+    }
+
     fetch(LOGIN_URL, {
         method: 'POST',
-        body: JSON.stringify(userSession),
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameValue, password: passwordValue })
     })
-        .then(response => response.json())
-        .then(data => {
-                userSession.token = data.token;
-                userSession.loggedIn = true;
-                // Guardo el objeto en el session storage
-                localStorage.setItem('userSession', JSON.stringify(userSession));
-                window.location.href = "index.html";
-                return;
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Credenciales inválidas');
+            }
+            return response.json();
         })
-        .catch((error) => {
-            userSession.loggedIn = false;
-            sessionStorage.clear('user');
-            alert('Usuario no existe o no esta autorizado, Intente nuevamente.');
+        .then(data => {
+            console.log('Respuesta del servidor:', data); 
+            if (data.token) {
+                const userSession = {
+                    username: usernameValue,
+                    token: data.token,  
+                    loggedIn: true,
+                };
+
+                console.log('Guardando userSession en localStorage:', userSession);  
+                localStorage.setItem('userSession', JSON.stringify(userSession));  
+
+                window.location.href = "index.html";  
+            } else {
+                throw new Error('No se recibió el token');
+            }
+        })
+        .catch(error => {
+            alert(error.message);
         });
-
-
-    console.log('Log in correcto y sesión guardada.');
-}
-
-
+});
 

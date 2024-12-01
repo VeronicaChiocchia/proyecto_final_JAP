@@ -6,3 +6,16 @@ Para iniciar seguir los siguientes pasos:
 4) En la terminal escribir "node database.js" para crear la base de datos y las tablas.
 5) En la terminal escribir "npm run dev" para iniciar el servidor.
 
+
+
+Para hacer peticiones con JWT:
+1) En el body de la petición:
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+2) Realizar el POST a http://localhost:3000/login  
+3) Incluir el token recibido en un header con el key 'Authorization', en el campo de value debe ir el token, de esta manera: Bearer 'nrodeltoken'  (sin comillas)
+4) Hacer peticiones GET a /protected/products, /protected/cats, /protected/cart ... etc
+5) Para ingresar a la página desde login.html, hacerlo con las credenciales anteriores (en el campo de correo électronico, y contraseña debe ir la palabra 'admin')
