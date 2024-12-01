@@ -8,7 +8,7 @@ Para iniciar seguir los siguientes pasos:
 
 
 
-Para hacer peticiones con JWT:
+Para hacer peticiones con JWT en Postman:
 1) En el body de la petición:
 {
     "username": "admin",
@@ -24,3 +24,6 @@ Para hacer peticiones con JWT:
 
 4) Hacer peticiones GET a /protected/products, /protected/cats, /protected/cart ... etc
 5) Para ingresar a la página desde login.html, hacerlo con las credenciales anteriores (en el campo de correo électronico, y contraseña debe ir la palabra 'admin')
+
+A tener en cuenta:
+El código SQL se encuentra incluído en el directorio Back-end, con el nombre ecommerce.sql
