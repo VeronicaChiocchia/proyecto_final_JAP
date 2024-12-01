@@ -34,20 +34,21 @@ function inputValidation() {
             hideError(input); // oculta si el campo es valido
         }
     });
-
+    console.log(isValid);
     return isValid;
 }
 
 //AL APRETAR INGRESAR, TE LLEVA A LA PAGINA PRINCIPAL SI ES VALIDO
-signBtn.addEventListener("click", function () {
-    if (inputValidation()) {
-        // Session storage
-        let token = password.value;
-        let userName = user.value;
-        console.log(token, userName);
-        loginUser(userName, token);
-    }
-});
+// signBtn.addEventListener("click", function () {
+//     console.log("clickeado");
+//     if (inputValidation()) {
+//         // Session storage
+//         let token = password.value;
+//         let userName = user.value;
+//         console.log(token, userName);
+//         loginUser(userName, token);
+//     }
+// });
 
 // evento que me muestra u oculta contraseña
 document.getElementById("show-hide-button").addEventListener("click", function () {
@@ -89,7 +90,7 @@ function loginUser(username, token) {
         })
         .catch((error) => {
             userSession.loggedIn = false;
-            sessionStorage.clear('user');
+            userSession.clear();
             alert('Usuario no existe o no esta autorizado, Intente nuevamente.');
         });
 
@@ -97,5 +98,33 @@ function loginUser(username, token) {
     console.log('Log in correcto y sesión guardada.');
 }
 
+// ACÁ EL CÓDIGO NUEVO:
+// ESTA ES LA FUNCIÓN QUE ARMÉ PARA UNIFICAR LOGINUSER() Y EL ADDEVENTLISTENES A SIGNBTN
 
-
+signBtn.addEventListener("click", function () {
+    console.log("Botón clickeado");
+    const usernameValue = user.value;
+    const passwordValue = password.value;
+    const userSession = { usernameValue, passwordValue };
+    
+    fetch(LOGIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userSession)
+    })
+    .then(response => response.json())
+//     .then(data => {
+//         console.log(data);
+//         // userSession.token = data.token;
+//         // userSession.loggedIn = true;
+//         // // Guardo el objeto en el session storage
+//         // localStorage.setItem('userSession', JSON.stringify(userSession));
+//         window.location.href = "index.html";
+//         return;
+// })
+    .then(data => {
+        console.log("Respuesta recibida:", data)
+        window.location.href = "index.html";
+    } )
+    .catch(error => console.error("Error en fetch:", error));
+});

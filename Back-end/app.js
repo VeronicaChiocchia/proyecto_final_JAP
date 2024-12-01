@@ -38,7 +38,8 @@ const USER = {
 // Middleware para verificar el token
 const authenticateToken = (req, res, next) => {
     // Obtener el header de autorización
-    const token = req.headers['authorization'];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
@@ -56,10 +57,11 @@ const authenticateToken = (req, res, next) => {
 
 // Ruta de login
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
+    console.log(req.body);
+    // const { username, password } = req.body;
+    // console.log(req.body.usernameValue);
     // Verificar credenciales
-    if (username === USER.username && password === USER.password) {
+    if (req.body.usernameValue == "admin" && req.body.passwordValue == "admin") {
         const token = jwt.sign(
             { username: USER.username },
             JWT_SECRET
