@@ -35,16 +35,14 @@ const USER = {
     password: 'admin'
 };
 
-// Middleware para verificar el token
 const authenticateToken = (req, res, next) => {
-    // Obtener el header de autorización
-    const token = req.headers['authorization'];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Extrae el token después de "Bearer"
 
     if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
 
-    // Verificar el token
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({ message: 'Token inválido o expirado' });
@@ -54,20 +52,26 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Ruta de login
+
+// Middleware global para proteger rutas (excepción para /login y /)
+app.use((req, res, next) => {
+    if (req.path === '/login' || req.path === '/') {
+        return next(); // No proteger estas rutas
+    }
+    authenticateToken(req, res, next); // Proteger todas las demás rutas
+});
+
+
+// Endpoint de login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    // Verificar credenciales
+    // Comparar con las credenciales definidas en USER
     if (username === USER.username && password === USER.password) {
-        const token = jwt.sign(
-            { username: USER.username },
-            JWT_SECRET
-        );
-
-        res.json({ token });
+        const token = jwt.sign({ username: USER.username }, JWT_SECRET);
+        return res.json({ token });
     } else {
-        res.status(401).json({ message: 'Credenciales inválidas' });
+        return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 });
 
