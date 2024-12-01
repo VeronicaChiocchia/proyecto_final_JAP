@@ -141,10 +141,10 @@ document.querySelector("#finalizar-compra-submit").addEventListener("click", (ev
         alert('Error: revise los campos requeridos.')
     } else {
         contenedorErrores.innerHTML = '';
-
         enviarDatos();
-        
-        
+        alert("Compra realizada con éxito");
+        localStorage.removeItem("carrito");
+        showCartProducts();
 
     }
 });
