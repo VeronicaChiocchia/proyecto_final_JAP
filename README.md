@@ -16,6 +16,11 @@ Para hacer peticiones con JWT:
 }
 
 2) Realizar el POST a http://localhost:3000/login  
-3) Incluir el token recibido en un header con el key 'Authorization', en el campo de value debe ir el token, de esta manera: Bearer 'nrodeltoken'  (sin comillas)
+3) Incluir el token recibido en un header con el key 'Authorization', en el campo de value debe ir el token, de esta manera: Bearer 'nrodeltoken'  (sin comillas) ejemplo:
+
+![postman](https://github.com/user-attachments/assets/3f7457a3-4868-4083-bbaf-b78b8829112b)
+
+
+
 4) Hacer peticiones GET a /protected/products, /protected/cats, /protected/cart ... etc
 5) Para ingresar a la página desde login.html, hacerlo con las credenciales anteriores (en el campo de correo électronico, y contraseña debe ir la palabra 'admin')
