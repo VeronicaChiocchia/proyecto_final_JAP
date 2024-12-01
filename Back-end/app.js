@@ -54,6 +54,14 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// Middleware global para proteger rutas (excepción para /login y /)
+app.use((req, res, next) => {
+    if (req.path === '/login' || req.path === '/') {
+        return next(); // No proteger estas rutas
+    }
+    authenticateToken(req, res, next); // Proteger las demás rutas
+});
+
 // Ruta de login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
