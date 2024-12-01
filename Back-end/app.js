@@ -55,7 +55,7 @@ const authenticateToken = (req, res, next) => {
 
 // Middleware global para proteger rutas (excepción para /login y /)
 app.use((req, res, next) => {
-    if (req.path === '/login' || req.path === '/') {
+    if (req.path === '/login' ||  req.path === '/protected/cart' || req.path === '/cart' || req.path === '/') {
         return next(); // No proteger estas rutas
     }
     authenticateToken(req, res, next); // Proteger todas las demás rutas
@@ -96,7 +96,7 @@ app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
 
-app.post("/cart", async (req, res) => {
+app.post("/protected/cart", async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();

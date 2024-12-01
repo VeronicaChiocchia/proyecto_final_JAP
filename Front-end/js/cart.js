@@ -169,7 +169,7 @@ async function enviarDatos() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': userSession.token
+                    // 'Authorization': userSession.token
                 },
                 body: JSON.stringify(data),
             });
